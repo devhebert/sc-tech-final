@@ -1,6 +1,6 @@
 # FitPose AI
 
-Microsserviço FastAPI para detecção de posturas de musculação com YOLO — Projeto avaliativo, Módulo 2, Semana 14.
+Microsserviço FastAPI para detecção de posturas de musculação com YOLO — Projeto avaliativo, Módulo 2.
 
 ## Dataset adotado
 
@@ -123,7 +123,7 @@ mypy src main.py
 - **Modelo não encontrado:** execute `./scripts/train_yolov8.sh` e confirme
   `ls -lh models/best.pt`.
 - **CPU em vez de GPU:** o treinamento continua funcionando; confirme no log se
-  aparece `CUDA:0 (NVIDIA GeForce RTX 4050)`.
+  aparece `CUDA:0 (SUA PLACA DE VIDEO)`.
 - **Unsupported image type:** envie uma imagem válida (JPG, JPEG ou PNG). A API
   converte o upload para RGB antes de executar o YOLO.
 
@@ -139,16 +139,10 @@ pip install ultralytics
 yolo detect train data=/caminho/fitness-normal/data.yaml model=yolov8n.pt epochs=50 imgsz=640 project=runs name=fitpose-yolov8
 ```
 
-Após validar o treinamento, copiar `runs/fitpose-yolov8/weights/best.pt` para `models/best.pt`. O modelo não é incluído no repositório por ser um arquivo grande.
+Após validar o treinamento, copiar `runs/fitpose-yolov8/weights/best.pt` para `models/best.pt`.
 
 | Modelo | Precisão | Recall | mAP50 | Inferência | Decisão |
 |---|---:|---:|---:|---:|---|
 | YOLOv8n | a medir | a medir | a medir | a medir | candidato inicial |
 | YOLOv11n | a medir | a medir | a medir | a medir | opcional |
 
-## Kanban e entrega
-Colunas sugeridas: Backlog, A Fazer, Em andamento, Revisão/Testes e Concluído. Cartões: escolher versão do dataset, exportar YOLO, treinar YOLOv8, validar métricas, implementar API, testar Swagger/Postman, gravar vídeo e publicar.
-
-## Entrega final
-
-Conferir: repositório GitHub, README, documentação funcional e técnica, link do dataset, versão e licença, métricas reais do treinamento, modelo funcional, quadro Trello público, vídeo com acesso de leitura e os links submetidos no AVA.
