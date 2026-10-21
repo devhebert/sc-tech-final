@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fitpose-ai"
+version = "1.0.0"
+description = "API de detecção de exercícios com YOLO"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi==0.115.6",
+  "uvicorn[standard]==0.34.0",
+  "python-multipart==0.0.20",
+  "ultralytics==8.3.68",
+  "Pillow==11.1.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

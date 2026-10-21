@@ -1,0 +1,13 @@
+path: /home/hebert/Documents/sctech/projeto-final/data/fitness_normal
+train: train/images
+val: valid/images
+
+nc: 15
+names: ['Normal_BrenchPress', 'Normal_Deadlifts', 'Normal_Dips', 'Normal_DumbbellBicepCurls', 'Normal_JumpingJacks', 'Normal_LatPulldown', 'Normal_LegPress', 'Normal_Lunges', 'Normal_MountainClimbers', 'Normal_OverheadPress', 'Normal_Plunk', 'Normal_PullUps', 'Normal_PushUps', 'Normal_RowingMachineExercise', 'Normal_SquatsWithBarbell']
+
+roboflow:
+  workspace: fitness-training
+  project: fitness_normal
+  version: 4
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/fitness-training/fitness_normal/dataset/4
