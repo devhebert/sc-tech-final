@@ -51,7 +51,7 @@ Requisitos: Python 3.11+, Git e pelo menos 8 GB de RAM. GPU NVIDIA com CUDA é
 recomendada, mas não obrigatória; sem GPU, o treinamento usa CPU e demora mais.
 
 ```bash
-cd /home/hebert/Documents/sctech/projeto-final
+cd caminho/para/fitpose-ai
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
