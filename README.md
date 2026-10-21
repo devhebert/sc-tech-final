@@ -12,9 +12,6 @@ Classes originais do dataset:
 
 Os nomes apresentam algumas grafias originais (`Brench`, `Plunk`). Eles serão preservados no modelo para manter compatibilidade com o `data.yaml`; a apresentação pode usar nomes amigáveis.
 
-## Documentação
-- [Documentação funcional](docs/documentacao-funcional.md)
-- [Documentação técnica](docs/documentacao-tecnica.md)
 
 ## Estrutura Clean Architecture
 
