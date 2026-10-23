@@ -1,0 +1,5 @@
+path: /home/hebert/Documents/sctech/projeto-final/data/fitness_teacher
+train: images
+val: images
+nc: 15
+names: ['Normal_BrenchPress', 'Normal_Deadlifts', 'Normal_Dips', 'Normal_DumbbellBicepCurls', 'Normal_JumpingJacks', 'Normal_LatPulldown', 'Normal_LegPress', 'Normal_Lunges', 'Normal_MountainClimbers', 'Normal_OverheadPress', 'Normal_Plunk', 'Normal_PullUps', 'Normal_PushUps', 'Normal_RowingMachineExercise', 'Normal_SquatsWithBarbell']
