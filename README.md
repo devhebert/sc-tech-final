@@ -6,6 +6,11 @@ Microsserviço FastAPI para detecção de posturas de musculação com YOLO — 
 
 Será utilizado o dataset [Fitness Normal](https://universe.roboflow.com/fitness-training/fitness_normal), do Roboflow Universe. Ele é do tipo **Object Detection**, possui 15 classes, aproximadamente 2.040 imagens e quatro versões publicadas. A licença indicada na página é CC BY 4.0; a versão escolhida e a data do download devem ser registradas no relatório final.
 
+## Organização do projeto
+
+- [Backlog do produto — Scrum FitPose IA](https://trello.com/invite/b/6adcc0b4711b032a5404431d/ATTIdc1957beef249391288eb2347b9343d2875AE613/🧠-scrum-fitpose-ia)
+- [Quadro Kanban — Scrum FitPose IA](https://trello.com/invite/b/6adcc21bcf35cc1c29108cd2/ATTI7378846d928ed03fe9eaf33e6771dc8e5EB687B1/🧠-kanban-scrum-fitpose-ia)
+
 Classes originais do dataset:
 
 `Normal_BrenchPress`, `Normal_Deadlifts`, `Normal_Dips`, `Normal_DumbbellBicepCurls`, `Normal_JumpingJacks`, `Normal_LatPulldown`, `Normal_LegPress`, `Normal_Lunges`, `Normal_MountainClimbers`, `Normal_OverheadPress`, `Normal_Plunk`, `Normal_PullUps`, `Normal_PushUps`, `Normal_RowingMachineExercise` e `Normal_SquatsWithBarbell`.
@@ -151,7 +156,35 @@ uvicorn main:app --reload
 
 Abra `http://127.0.0.1:8000/docs`.
 
-### 5. Fazer uma inferência
+### 6. Publicar a API na internet com ngrok
+
+Para permitir que outras pessoas testem a API remotamente, mantenha a API
+rodando em um terminal e, em outro, inicie um túnel do ngrok para a porta
+`8000`.
+
+1. Instale o [ngrok](https://ngrok.com/download), crie uma conta gratuita e
+   configure o seu token de autenticação conforme as instruções do site.
+2. Com o ambiente virtual ativado e a API em execução, rode:
+
+```bash
+ngrok http 8000
+```
+
+O ngrok exibirá uma URL pública semelhante a
+`https://abcd-1234.ngrok-free.app`. Compartilhe essa URL para que outras
+pessoas acessem a documentação em `/docs` ou façam requisições para o endpoint
+`/detect`, por exemplo:
+
+```bash
+curl -X POST https://abcd-1234.ngrok-free.app/detect \
+  -F "file=@caminho/para/exercicio.jpg"
+```
+
+A URL muda quando o túnel é reiniciado no plano gratuito. O túnel também deixa
+de funcionar quando o comando do ngrok é encerrado. Não publique modelos,
+tokens ou outros arquivos sensíveis e encerre o túnel após os testes.
+
+### 7. Fazer uma inferência
 
 No Swagger, abra `POST /detect`, clique em **Try it out**, selecione uma imagem
 de exercício e clique em **Execute**. Pela linha de comando:
