@@ -48,6 +48,33 @@ anotações de tipo explícitas.
 modelo YOLO, `application` contém os casos de uso e `domain` contém as regras e
 contratos.
 
+## Scripts disponíveis
+
+A pasta `scripts/` reúne os comandos de automação do treinamento e da
+pseudo-rotulagem. Eles servem para padronizar a execução do projeto sem repetir
+comandos longos no terminal:
+
+- `scripts/train_yolov8.sh`: treina o modelo base `yolov8n.pt` com o dataset
+  principal `data/fitness_normal`, identifica o `best.pt` mais recente em
+  `runs/` e copia para `models/best.pt`.
+- `scripts/pseudo_label_yolo.py`: usa um modelo professor (padrão `yolo11l.pt`)
+  para analisar imagens novas em `data/fitness_extra/images` e gerar rótulos YOLO
+  em `data/fitness_teacher/` com confiança configurável (`--confidence`).
+- `scripts/train_teacher_student.sh`: executa a sequência completa de
+  pseudo-rotulagem + treinamento do aluno (`yolov8n.pt`), preservando a última
+  comparação com o dataset original em `data/fitness_normal`.
+
+Exemplos de uso:
+
+```bash
+bash scripts/train_yolov8.sh
+python scripts/pseudo_label_yolo.py --teacher yolo11l.pt --source data/fitness_extra/images --output data/fitness_teacher --confidence 0.70
+bash scripts/train_teacher_student.sh
+```
+
+Se o ambiente estiver com a virtualenv ativa, esses comandos rodam sem a
+necessidade de repetir o fluxo inteiro manualmente.
+
 ## Guia completo de execução
 
 Este projeto possui dois modos independentes de treinamento. Escolha apenas
@@ -256,7 +283,7 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-**3. Baixar o dataset original**
+**3. Baixar o dataset original** (opcional, pois já está dentro do projeto)
 
 Baixe a versão 4 do
 [fitness_normal](https://universe.roboflow.com/fitness-training/fitness_normal)

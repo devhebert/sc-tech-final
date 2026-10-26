@@ -1,4 +1,4 @@
-path: /home/hebert/Documents/sctech/projeto-final/data/fitness_teacher
+path: caminhoDoProjeto/data/fitness_teacher
 train: images
 val: images
 nc: 15
