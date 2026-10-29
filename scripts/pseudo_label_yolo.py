@@ -37,8 +37,10 @@ def main() -> None:
     # nenhum rótulo revisado manualmente.
     images_dir = args.output / "images"
     labels_dir = args.output / "labels"
+    annotated_dir = args.output / "annotated"
     images_dir.mkdir(parents=True, exist_ok=True)
     labels_dir.mkdir(parents=True, exist_ok=True)
+    annotated_dir.mkdir(parents=True, exist_ok=True)
 
     # O professor é um detector maior/especializado. Ele gera caixas para
     # imagens novas; não usamos a validação original como entrada aqui.
@@ -53,7 +55,13 @@ def main() -> None:
 
         destination_image = images_dir / image_path.name
         destination_label = labels_dir / f"{image_path.stem}.txt"
+        destination_annotated = annotated_dir / image_path.name
         shutil.copy2(image_path, destination_image)
+        # Guarda uma cópia visual com as caixas e coordenadas desenhadas pelo
+        # Ultralytics para facilitar a conferência dos pseudo-rótulos.
+        plotted_image = result.plot(labels=True, conf=True, boxes=True)
+        from PIL import Image
+        Image.fromarray(plotted_image[:, :, ::-1]).save(destination_annotated)
         height, width = result.orig_shape
         with destination_label.open("w", encoding="utf-8") as label_file:
             for box, class_id, confidence in zip(result.boxes.xyxy, result.boxes.cls, result.boxes.conf):

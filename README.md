@@ -59,7 +59,9 @@ comandos longos no terminal:
   `runs/` e copia para `models/best.pt`.
 - `scripts/pseudo_label_yolo.py`: usa um modelo professor (padrão `yolo11l.pt`)
   para analisar imagens novas em `data/fitness_extra/images` e gerar rótulos YOLO
-  em `data/fitness_teacher/` com confiança configurável (`--confidence`).
+  em `data/fitness_teacher/` com confiança configurável (`--confidence`). As
+  imagens ficam em `images/`, as coordenadas em `labels/` e as cópias anotadas
+  com as caixas desenhadas ficam em `annotated/`.
 - `scripts/train_teacher_student.sh`: executa a sequência completa de
   pseudo-rotulagem + treinamento do aluno (`yolov8n.pt`), preservando a última
   comparação com o dataset original em `data/fitness_normal`.
