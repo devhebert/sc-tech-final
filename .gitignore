@@ -5,8 +5,8 @@ __pycache__/
 models/*.pt
 datasets/
 .env
-runs/
-data/fitness_teacher/annotated/
-data/fitness_teacher/images/
-data/fitness_teacher/labels/
-data/fitness_teacher/*.cache
+#runs/
+#data/fitness_teacher/annotated/
+#data/fitness_teacher/images/
+#data/fitness_teacher/labels/
+#data/fitness_teacher/*.cache

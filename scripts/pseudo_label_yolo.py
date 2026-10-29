@@ -83,7 +83,7 @@ def main() -> None:
     # diretório global de datasets quando o treinamento é iniciado por outro
     # diretório ou por uma configuração externa.
     data_yaml.write_text(
-        f"path: {args.output.resolve()}\ntrain: images\nval: images\n"
+        "path: ../data/fitness_teacher\ntrain: images\nval: images\n"
         "nc: 15\n"
         "names: ['Normal_BrenchPress', 'Normal_Deadlifts', 'Normal_Dips', "
         "'Normal_DumbbellBicepCurls', 'Normal_JumpingJacks', 'Normal_LatPulldown', "

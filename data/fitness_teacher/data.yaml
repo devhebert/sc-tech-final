@@ -1,4 +1,4 @@
-path: caminhoDoProjeto/data/fitness_teacher
+path: ../data/fitness_teacher
 train: images
 val: images
 nc: 15
