@@ -20,6 +20,13 @@ usado pela API.
 
 Será utilizado o dataset [Fitness Normal](https://universe.roboflow.com/fitness-training/fitness_normal), do Roboflow Universe. Ele é do tipo **Object Detection**, possui 15 classes, aproximadamente 2.040 imagens e quatro versões publicadas. A licença indicada na página é CC BY 4.0; a versão escolhida e a data do download devem ser registradas no relatório final.
 
+Dataset Version   
+v4 2025-03-11 2:36am   
+Generated on Mar 10, 2025   
+
+Train Set 96%: 5499 Images   
+Valid Set 4%: 207 Images
+
 ## Organização do projeto
 
 - [Backlog do produto — Scrum FitPose IA](https://trello.com/invite/b/6adcc0b4711b032a5404431d/ATTIdc1957beef249391288eb2347b9343d2875AE613/🧠-scrum-fitpose-ia)
@@ -84,6 +91,12 @@ Este modelo será usado como professor e aprenderá os nomes dos exercícios a
 partir do dataset oficial:
 
 ```bash
+python scripts/train_yolov8.py
+```
+
+O script `.sh` equivalente também pode ser usado:
+
+```bash
 bash scripts/train_yolov8.sh
 ```
 
@@ -105,7 +118,7 @@ rm -rf data/fitness_teacher/images \
        data/fitness_teacher/labels \
        data/fitness_teacher/annotated
 
-python scripts/pseudo_label_yolo.py \
+python scripts/pseudo_label_yolo11l.py \
   --teacher models/best.pt \
   --source data/fitness_extra/images \
   --output data/fitness_teacher \
@@ -128,13 +141,13 @@ como `Normal_Plunk`, e não `person`.
 ## 4. Treinar o aluno final
 
 ```bash
-yolo detect train \
-  data=data/fitness_teacher/data.yaml \
-  model=yolov8n.pt \
-  epochs=30 \
-  imgsz=640 \
-  project=runs \
-  name=fitpose-teacher-student
+python scripts/train_teacher_student.py
+```
+
+O script `.sh` equivalente também pode ser usado:
+
+```bash
+bash scripts/train_teacher_student.sh
 ```
 
 O melhor modelo ficará em:
