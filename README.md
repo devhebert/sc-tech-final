@@ -18,7 +18,7 @@ usado pela API.
 
 ## Dataset adotado
 
-Será utilizado o dataset [Fitness Normal](https://universe.roboflow.com/fitness-training/fitness_normal), do Roboflow Universe. Ele é do tipo **Object Detection**, possui 15 classes, aproximadamente 2.040 imagens e quatro versões publicadas. A licença indicada na página é CC BY 4.0; a versão escolhida e a data do download devem ser registradas no relatório final.
+Será utilizado o dataset [Fitness Normal](https://universe.roboflow.com/fitness-training/fitness_normal), do Roboflow Universe. Ele é do tipo **Object Detection**, possui 15 classes e quatro versões publicadas. A licença indicada na página é CC BY 4.0; a versão escolhida e a data do download devem ser registradas no relatório final.
 
 Dataset Version   
 v4 2025-03-11 2:36am   
@@ -26,6 +26,22 @@ Generated on Mar 10, 2025
 
 Train Set 96%: 5499 Images   
 Valid Set 4%: 207 Images
+
+
+Para o teacher, dataset [Workout/Exercise Images](https://www.kaggle.com/datasets/hasyimabdillah/workoutexercises-images?resource=download)
+
+(10 classes e 7213 imagens)
+
+bench press
+deadlift
+tricep dips
+barbell biceps curl , hammer curl
+lat pulldown
+shoulder press
+plank
+pull up
+push up
+squat
 
 ## Organização do projeto
 
