@@ -2,13 +2,12 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
-models/
-runs/
+# models/
+# runs/
 *.pt
 datasets/
 .env
-runs/
 data/fitness_teacher/annotated/
-data/fitness_teacher/images/
-data/fitness_teacher/labels/
+# data/fitness_teacher/images/
+# data/fitness_teacher/labels/
 data/fitness_teacher/*.cache

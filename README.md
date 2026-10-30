@@ -134,7 +134,7 @@ rm -rf data/fitness_teacher/images \
        data/fitness_teacher/labels \
        data/fitness_teacher/annotated
 
-python scripts/pseudo_label_yolo.py \
+python scripts/pseudo_label_yolo11l.py \
   --teacher models/best-v8.pt \
   --source data/fitness_extra/images \
   --output data/fitness_teacher \
