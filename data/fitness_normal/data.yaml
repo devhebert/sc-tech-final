@@ -1,4 +1,4 @@
-path: ../data/fitness_normal
+path: /home/hebert/Documents/sctech/projeto-final/data/fitness_normal
 train: train/images
 val: valid/images
 

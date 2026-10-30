@@ -87,12 +87,12 @@ partir do dataset oficial:
 bash scripts/train_yolov8.sh
 ```
 
-Ao terminar, o modelo estará em `models/best.pt`.
+Ao terminar, o modelo estará em `models/best-v8.pt`.
 
 Guarde uma cópia para o benchmark:
 
 ```bash
-cp models/best.pt models/best-base.pt
+cp models/best-v8.pt models/best-base.pt
 ```
 
 ## 3. Gerar os rótulos das imagens novas
@@ -106,7 +106,7 @@ rm -rf data/fitness_teacher/images \
        data/fitness_teacher/annotated
 
 python scripts/pseudo_label_yolo.py \
-  --teacher models/best.pt \
+  --teacher models/best-v8.pt \
   --source data/fitness_extra/images \
   --output data/fitness_teacher \
   --confidence 0.50
@@ -146,7 +146,7 @@ runs/fitpose-teacher-student/weights/best.pt
 ## 5. Usar o aluno na aplicação
 
 ```bash
-cp runs/fitpose-teacher-student/weights/best.pt models/best.pt
+cp runs/fitpose-teacher-student/weights/best-v8.pt models/best-v8.pt
 ```
 
 ## 6. Benchmark dos modelos
@@ -170,7 +170,7 @@ yolo detect val \
 
 ```bash
 yolo detect val \
-  model=models/best.pt \
+  model=models/best-v8.pt \
   data=data/fitness_normal/data.yaml \
   split=val \
   project=runs/benchmark \
@@ -202,5 +202,5 @@ copiar para models/best.pt
 - O arquivo `.txt` em `labels/` contém as coordenadas normalizadas das caixas.
 - As imagens em `annotated/` servem para verificar os rótulos antes do treino.
 - Se aparecer `person`, o comando foi executado com um modelo genérico em vez
-  de `models/best.pt`.
+  de `models/best-v8.pt`.
 - Não versionar imagens, pesos grandes ou a pasta `runs/` no Git.

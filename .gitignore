@@ -2,10 +2,12 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
-models/*.pt
+models/
+runs/
+*.pt
 datasets/
 .env
-#runs/
+# keep local generated data out of git
 #data/fitness_teacher/annotated/
 #data/fitness_teacher/images/
 #data/fitness_teacher/labels/
