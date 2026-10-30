@@ -6,7 +6,7 @@ cd "$PROJECT_ROOT"
 
 DATASET="${DATASET:-data/fitness_normal/data.yaml}"
 #MODELS="${MODELS:-yolov8n.pt yolov8s.pt yolov8m.pt yolov8l.pt yolo11n.pt yolo11s.pt yolo11m.pt yolo11l.pt}"
-MODELS="${MODELS:-yolov8l.pt yolo11l.pt}"
+MODELS="${MODELS:-yolov8n.pt yolov8l.pt}"
 EPOCHS="${EPOCHS:-100}"
 PATIENCE="${PATIENCE:-20}"
 IMGSZ="${IMGSZ:-512}"

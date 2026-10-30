@@ -116,6 +116,18 @@ O script `.sh` equivalente também pode ser usado:
 bash scripts/train_yolov8.sh
 ```
 
+Para treinar várias variantes do YOLOv8:
+
+```bash
+python scripts/train_yolov8_variants.py
+```
+
+O wrapper `.sh` equivalente também pode ser usado:
+
+```bash
+bash scripts/train_yolov8_variants.sh
+```
+
 Ao terminar, o modelo estará em `models/best-v8.pt`.
 
 Guarde uma cópia para o benchmark:
@@ -157,13 +169,13 @@ como `Normal_Plunk`, e não `person`.
 ## 4. Treinar o aluno final
 
 ```bash
-python scripts/train_teacher_student.py
-```
-
-O script `.sh` equivalente também pode ser usado:
-
-```bash
-bash scripts/train_teacher_student.sh
+yolo detect train \
+  data=data/fitness_teacher/data.yaml \
+  model=yolov8n.pt \
+  epochs=30 \
+  imgsz=640 \
+  project=runs \
+  name=fitpose-teacher-student
 ```
 
 O melhor modelo ficará em:
@@ -180,37 +192,46 @@ cp runs/fitpose-teacher-student/weights/best-v8.pt models/best-v8.pt
 
 ## 6. Benchmark dos modelos
 
-Compare os dois modelos usando a mesma validação oficial em
+Compare os três modelos treinados usando a mesma validação oficial em
 `data/fitness_normal/valid`. Não use as imagens pseudo-rotuladas para medir o
 resultado final.
 
-### Avaliar o modelo base
+### Avaliar o YOLOv8
 
 ```bash
 yolo detect val \
-  model=models/best-base.pt \
+  model=runs/fitpose-yolov8/weights/best.pt \
   data=data/fitness_normal/data.yaml \
   split=val \
   project=runs/benchmark \
-  name=base
+  name=yolov8
 ```
 
-### Avaliar o modelo professor–aluno
+### Avaliar o YOLOv8l3
 
 ```bash
 yolo detect val \
-  model=models/best-v8.pt \
+  model=runs/fitpose-yolov8l3/weights/best.pt \
   data=data/fitness_normal/data.yaml \
   split=val \
   project=runs/benchmark \
-  name=teacher-student
+  name=yolov8l3
 ```
 
-Os resultados ficam em `runs/benchmark/base/` e
-`runs/benchmark/teacher-student/`. Compare principalmente `mAP50-95`, `mAP50`,
-precisão e recall. O modelo professor–aluno só deve ser considerado melhor se
-apresentar ganho na mesma validação, sem reduzir significativamente precisão
-ou recall.
+### Avaliar o YOLOv8n
+
+```bash
+yolo detect val \
+  model=runs/fitpose-yolov8n/weights/best.pt \
+  data=data/fitness_normal/data.yaml \
+  split=val \
+  project=runs/benchmark \
+  name=yolov8n
+```
+
+Os resultados ficam em `runs/benchmark/yolov8/`, `runs/benchmark/yolov8l3/` e
+`runs/benchmark/yolov8n/`. Compare principalmente `mAP50-95`, `mAP50`,
+precisão e recall, sempre usando a mesma configuração de validação.
 
 ## Fluxo resumido
 

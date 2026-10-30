@@ -4,10 +4,15 @@ __pycache__/
 .pytest_cache/
 # models/
 # runs/
-*.pt
+# *.pt
 datasets/
 .env
-data/fitness_teacher/annotated/
-# data/fitness_teacher/images/
-# data/fitness_teacher/labels/
+data/fitness_extra/
+data/fitness_teacher/
 data/fitness_teacher/*.cache
+scripts/pseudo_label_yolo11l.py
+scripts/train_teacher_student.py
+scripts/train_teacher_student.sh
+scripts/train_yolov8.py
+scripts/train_yolov8.sh
+src/fitpose_ai.egg-info/
