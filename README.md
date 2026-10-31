@@ -1,83 +1,95 @@
-# FitPose AI — treinamento professor–aluno
+# FitPose AI
 
-Projeto de detecção de exercícios com YOLO. Este documento descreve somente o
-fluxo de treinamento professor–aluno.
+Projeto de detecção de exercícios com YOLO e API FastAPI. O projeto treina e
+compara duas variantes do YOLOv8 usando o mesmo dataset e a mesma divisão de
+validação:
 
-## Arquitetura do projeto
-
-```text
-imagens de entrada → API FastAPI → YoloDetector → modelo YOLO
-                                      ↓
-                         exercício + confiança + coordenadas
-```
-
-O dataset oficial fica em `data/fitness_normal/`. As imagens novas ficam em
-`data/fitness_extra/images/`. O professor gera pseudo-rótulos em
-`data/fitness_teacher/`, e o aluno aprende com esses exemplos antes de ser
-usado pela API.
-
-## Dataset adotado
-
-Será utilizado o dataset [Fitness Normal](https://universe.roboflow.com/fitness-training/fitness_normal), do Roboflow Universe. Ele é do tipo **Object Detection**, possui 15 classes e quatro versões publicadas. A licença indicada na página é CC BY 4.0; a versão escolhida e a data do download devem ser registradas no relatório final.
-
-Dataset Version   
-v4 2025-03-11 2:36am   
-Generated on Mar 10, 2025   
-
-Train Set 96%: 5499 Images   
-Valid Set 4%: 207 Images
-
-
-Para o teacher, dataset [Workout/Exercise Images](https://www.kaggle.com/datasets/hasyimabdillah/workoutexercises-images?resource=download)
-
-(10 classes e 7213 imagens)
-
-bench press
-deadlift
-tricep dips
-barbell biceps curl , hammer curl
-lat pulldown
-shoulder press
-plank
-pull up
-push up
-squat
+- YOLOv8n;
+- YOLOv8l.
 
 ## Organização do projeto
 
 - [Backlog do produto — Scrum FitPose IA](https://trello.com/invite/b/6adcc0b4711b032a5404431d/ATTIdc1957beef249391288eb2347b9343d2875AE613/🧠-scrum-fitpose-ia)
 - [Quadro Kanban — Scrum FitPose IA](https://trello.com/invite/b/6adcc21bcf35cc1c29108cd2/ATTI7378846d928ed03fe9eaf33e6771dc8e5EB687B1/🧠-kanban-scrum-fitpose-ia)
 
-Classes originais do dataset:
-
-`Normal_BrenchPress`, `Normal_Deadlifts`, `Normal_Dips`, `Normal_DumbbellBicepCurls`, `Normal_JumpingJacks`, `Normal_LatPulldown`, `Normal_LegPress`, `Normal_Lunges`, `Normal_MountainClimbers`, `Normal_OverheadPress`, `Normal_Plunk`, `Normal_PullUps`, `Normal_PushUps`, `Normal_RowingMachineExercise` e `Normal_SquatsWithBarbell`.
-
-Os nomes preservam as grafias originais (`Brench` e `Plunk`) para manter a
-compatibilidade com o `data.yaml`. A apresentação pode usar nomes amigáveis.
-
-## Estrutura Clean Architecture
+## Arquitetura
 
 ```text
-.
-├── main.py                         # composition root da API
-├── pyproject.toml                  # empacotamento e dependências
-├── requirements.txt
-├── mypy.ini                        # tipagem estática estrita
-├── docs/
-└── src/fitpose_ai/
-    ├── domain/                     # entidades e interfaces (Protocol)
-    ├── application/                # casos de uso
-    ├── controller/                 # controllers HTTP/FastAPI
-    ├── client/                     # cliente do modelo YOLO
-    ├── config/                     # dataclasses de configuração
-    └── composition.py              # injeção manual de dependências
+imagem → API FastAPI → YoloDetector → modelo YOLO
+                                      ↓
+                         exercício + confiança + coordenadas
 ```
 
 O domínio não conhece FastAPI nem Ultralytics. O caso de uso depende da porta
-`ExerciseDetector`, e `YoloDetector` encapsula o cliente YOLO. Essa separação
-permite testar a regra de negócio com um detector falso, sem carregar o modelo.
-As classes são imutáveis com `@dataclass(frozen=True)` e as funções possuem
-anotações de tipo explícitas.
+`ExerciseDetector`, enquanto `YoloDetector` encapsula a integração com o
+modelo YOLO.
+
+## Dataset
+
+O dataset utilizado é o [Fitness Normal](https://universe.roboflow.com/fitness-training/fitness_normal),
+do Roboflow Universe. Ele é um dataset de **Object Detection** com 15 classes,
+licença CC BY 4.0 e 4 versões publicadas. A versão escolhida foi a *v4 2025-03-11* que contém 5706 imagens, 
+divididas em:
+
+Treino (96%): 5499 imagens   
+Validaçao (4%): 207 imagens
+
+O dataset pode ser encontrado em `data/fitness_normal/` com a seguinte estrutura:
+
+```text
+data/fitness_normal/
+├── data.yaml
+├── train/
+│   ├── images/
+│   └── labels/
+└── valid/
+    ├── images/
+    └── labels/
+```
+
+As classes definidas em `data/fitness_normal/data.yaml` são:
+
+```text
+Normal_BrenchPress
+Normal_Deadlifts
+Normal_Dips
+Normal_DumbbellBicepCurls
+Normal_JumpingJacks
+Normal_LatPulldown
+Normal_LegPress
+Normal_Lunges
+Normal_MountainClimbers
+Normal_OverheadPress
+Normal_Plunk
+Normal_PullUps
+Normal_PushUps
+Normal_RowingMachineExercise
+Normal_SquatsWithBarbell
+```
+
+Os nomes preservam as grafias originais do dataset, como `Brench` e `Plunk`,
+para manter a compatibilidade com o arquivo `data.yaml`.
+
+## Estrutura do projeto (Clean Architecture)
+
+```text
+.
+├── main.py
+├── pyproject.toml
+├── requirements.txt
+├── mypy.ini
+├── data/fitness_normal/
+├── models/
+├── runs/
+├── scripts/
+└── src/fitpose_ai/
+    ├── domain/       # entidades e interfaces
+    ├── application/  # casos de uso
+    ├── controller/   # endpoints FastAPI
+    ├── client/       # integração com YOLO
+    ├── config/       # configurações da aplicação
+    └── composition.py
+```
 
 ## Organização das camadas
 
@@ -85,187 +97,254 @@ anotações de tipo explícitas.
 modelo YOLO, `application` contém os casos de uso e `domain` contém as regras e
 contratos.
 
-## 1. Preparar o ambiente
+## 1. Preparação do ambiente
 
-```bash
-cd /home/hebert/Documents/sctech/projeto-final
-source .venv/bin/activate
+No Windows PowerShell:
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
 ```
 
-O dataset oficial deve estar em `data/fitness_normal/`, contendo `data.yaml`,
-`train/images`, `train/labels`, `valid/images` e `valid/labels`.
+No Linux ou macOS:
 
-Coloque imagens novas, sem rótulos, em:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
+
+OBS: os comandos devem ser executados na raíz do projeto.
+
+## 2. Treinamento dos modelos
+
+O script `scripts/train_yolov8_variants.py` treina, por padrão, as variantes
+`yolov8n.pt` e `yolov8l.pt` usando:
+
+- 100 épocas;
+- `imgsz=512`;
+- `batch=4`;
+- `patience=20`;
+- dataset `data/fitness_normal/data.yaml`.
+
+Execute:
+
+```powershell
+python scripts\train_yolov8_variants.py
+```
+
+O script também pode ser configurado por variáveis de ambiente, por exemplo:
+
+```powershell
+$env:EPOCHS="50"
+$env:IMGSZ="640"
+$env:MODELS="yolov8n.pt yolov8l.pt"
+python scripts\train_yolov8_variants.py
+```
+
+Ao final, os melhores pesos ficam em:
 
 ```text
-data/fitness_extra/images/
+runs/fitpose-yolov8n/weights/best.pt
+runs/fitpose-yolov8l/weights/best.pt
 ```
 
-## 2. Treinar o primeiro modelo
+Os arquivos de cada treinamento, incluindo `results.csv`, ficam na respectiva
+pasta dentro de `runs/`.
 
-Este modelo será usado como professor e aprenderá os nomes dos exercícios a
-partir do dataset oficial:
-
-```bash
-python scripts/train_yolov8.py
-```
-
-O script `.sh` equivalente também pode ser usado:
-
-```bash
-bash scripts/train_yolov8.sh
-```
-
-Para treinar várias variantes do YOLOv8:
-
-```bash
-python scripts/train_yolov8_variants.py
-```
-
-O wrapper `.sh` equivalente também pode ser usado:
+O script `scripts/train_yolov8_variants.sh` é a alternativa para ambientes com
+Bash. Execute-o com:
 
 ```bash
 bash scripts/train_yolov8_variants.sh
 ```
 
-Ao terminar, o modelo estará em `models/best-v8.pt`.
+## 3. Avaliação durante o treinamento
 
-Guarde uma cópia para o benchmark:
+Durante o treinamento, o YOLO avalia o modelo ao final de cada época usando o
+conjunto de validação definido em `data.yaml`. Essa etapa acompanha a evolução
+do modelo e ajuda a selecionar o `best.pt`.
 
-```bash
-cp models/best-v8.pt models/best-base.pt
-```
-
-## 3. Gerar os rótulos das imagens novas
-
-Use o modelo treinado do projeto como professor. Não use `yolo11l.pt`, pois ele
-é genérico e pode identificar apenas `person`.
-
-```bash
-rm -rf data/fitness_teacher/images \
-       data/fitness_teacher/labels \
-       data/fitness_teacher/annotated
-
-python scripts/pseudo_label_yolo11l.py \
-  --teacher models/best-v8.pt \
-  --source data/fitness_extra/images \
-  --output data/fitness_teacher \
-  --confidence 0.50
-```
-
-O script cria:
+Os principais arquivos gerados são:
 
 ```text
-data/fitness_teacher/
-├── images/        imagens aceitas pelo professor
-├── labels/        coordenadas YOLO das caixas detectadas
-├── annotated/     imagens com caixas e nomes desenhados
-└── data.yaml      configuração do dataset do aluno
+results.csv
+results.png
+confusion_matrix.png
+F1_curve.png
+PR_curve.png
+P_curve.png
+R_curve.png
 ```
 
-Confira as imagens em `annotated/`. Elas devem mostrar nomes de exercícios,
-como `Normal_Plunk`, e não `person`.
+Essa avaliação é diferente do benchmark final: o benchmark executa uma nova
+avaliação padronizada dos pesos finais dos dois modelos.
 
-## 4. Treinar o aluno final
+## 4. Executação do benchmark
 
-```bash
-yolo detect train \
-  data=data/fitness_teacher/data.yaml \
-  model=yolov8n.pt \
-  epochs=30 \
-  imgsz=640 \
-  project=runs \
-  name=fitpose-teacher-student
+O benchmark principal é executado por:
+
+```powershell
+python scripts\benchmark.py
 ```
 
-O melhor modelo ficará em:
+O script:
+
+1. avalia `runs/fitpose-yolov8l/weights/best.pt`;
+2. avalia `runs/fitpose-yolov8n/weights/best.pt`;
+3. imprime no terminal qual modelo está sendo avaliado e as métricas correspondentes;
+4. salva as métricas consolidadas em `runs/benchmark/metrics.csv`;
+5. salva TP, FP e FN por classe em `runs/benchmark/metrics_by_class.csv`.
+
+As imagens e os gráficos de cada avaliação ficam em:
 
 ```text
-runs/fitpose-teacher-student/weights/best.pt
+runs/benchmark/yolov8l/
+runs/benchmark/yolov8n/
 ```
 
-## 5. Usar o aluno na aplicação
+Os dois modelos devem usar o mesmo dataset, a mesma divisão `val` e a mesma
+configuração de validação. O script reutiliza os arquivos `best.pt` já
+existentes e não executa um novo treinamento.
 
-```bash
-cp runs/fitpose-teacher-student/weights/best-v8.pt models/best-v8.pt
-```
+Além de precisão, recall e mAP, o arquivo `metrics.csv` registra:
 
-## 6. Benchmark dos modelos
+- `TP_total`: detecções corretas;
+- `FP_total`: detecções sem correspondência correta com um rótulo;
+- `FN_total`: objetos anotados que não foram detectados;
+- `acertos_brutos`: total de verdadeiros positivos no conjunto de validação;
+- `latencia_inferencia_ms_img`: tempo médio de inferência por imagem;
+- `FPS`: quadros por segundo, calculado como `1000 / ms_por_imagem`.
 
-Compare os três modelos treinados usando a mesma validação oficial em
-`data/fitness_normal/valid`. Não use as imagens pseudo-rotuladas para medir o
-resultado final.
+O arquivo `metrics_by_class.csv` detalha `TP`, `FP` e `FN` para cada classe.
+Os valores são derivados da matriz de confusão produzida durante a validação.
+Assim, recall alto representa menos exercícios perdidos, enquanto precisão alta
+representa menos classificações incorretas. A latência e o FPS medidos referem-se
+à execução no ambiente em que o benchmark foi executado.
 
-### Executar o benchmark
+### Avaliação individual
 
-O benchmark principal é executado pelo script `scripts/benchmark.py`, que
-avalia os três modelos e salva as métricas consolidadas em
-`runs/benchmark/metrics.csv`:
+Se não for necessário gerar o CSV consolidado, cada modelo pode ser avaliado
+individualmente:
 
-```bash
-python scripts/benchmark.py
-```
-
-Os gráficos e as imagens de validação ficam em
-`runs/benchmark/yolov8l/` e `runs/benchmark/yolov8n/`.
-
-### Executar a validação individualmente
-
-Se não for necessário salvar as métricas consolidadas em CSV, os modelos também
-podem ser avaliados individualmente com os comandos `yolo detect val`:
-
-#### Avaliar o YOLOv8l
-
-```bash
+```powershell
 yolo detect val \
-  model=runs/fitpose-yolov8l/weights/best.pt \
-  data=data/fitness_normal/data.yaml \
+  model=runs\fitpose-yolov8l\weights\best.pt \
+  data=data\fitness_normal\data.yaml \
   split=val \
-  project=runs/benchmark \
+  project=runs\benchmark \
   name=yolov8l
 ```
 
-#### Avaliar o YOLOv8n
-
-```bash
+```powershell
 yolo detect val \
-  model=runs/fitpose-yolov8n/weights/best.pt \
-  data=data/fitness_normal/data.yaml \
+  model=runs\fitpose-yolov8n\weights\best.pt \
+  data=data\fitness_normal\data.yaml \
   split=val \
-  project=runs/benchmark \
+  project=runs\benchmark \
   name=yolov8n
 ```
 
-Os comandos individuais exibem as métricas no terminal, mas não geram
-necessariamente um arquivo CSV. Compare principalmente `mAP50-95`, `mAP50`,
-precisão e recall, sempre usando a mesma configuração de validação.
+Esses comandos exibem as métricas no terminal e geram os gráficos e imagens,
+mas não geram necessariamente um arquivo CSV consolidado.
 
-Durante o treinamento, o YOLO já avalia o modelo ao final de cada época usando
-o conjunto de validação. Essa etapa gera métricas e arquivos como
-`results.csv`, `results.png`, `confusion_matrix.png` e as curvas de precisão e
-recall. A avaliação durante o treinamento acompanha a evolução do modelo e ajuda a escolher o best.pt.   
-O benchmark separado avalia os modelos finais com a mesma configuração e facilita uma comparação controlada 
-entre eles, por isso continua sendo recomendado para comparar os três
-modelos finais de forma padronizada.
+### Resultado do benchmark
 
-## Fluxo resumido
+Os resultados registrados em `runs/benchmark/metrics.csv` foram:
 
-```text
-dataset oficial
-      ↓
-treinamento inicial → models/best.pt (professor)
-      ↓
-imagens novas → pseudo-rótulos e imagens anotadas
-      ↓
-treinamento final → best.pt do aluno
-      ↓
-copiar para models/best.pt
+| Métrica | YOLOv8l | YOLOv8n |
+|---|---:|---:|
+| Precisão | 0,9690 | 0,8294 |
+| Recall | 1,0000 | 0,8728 |
+| mAP50 | 0,9950 | 0,9169 |
+| mAP50-95 | 0,8831 | 0,6164 |
+| TP total | 207 | 201 |
+| FP total | 0 | 24 |
+| FN total | 0 | 6 |
+| Acertos brutos | 207 | 201 |
+| Latência de inferência | 855,79 ms/imagem | 125,43 ms/imagem |
+| FPS | 1,17 | 7,97 |
+
+Significado das métricas:
+
+- **TP (True Positive ou verdadeiro positivo):** detecção correta, quando a
+  previsão corresponde a um objeto realmente presente e à sua classe.
+- **FP (False Positive ou falso positivo):** detecção incorreta, quando o
+  modelo prevê um objeto que não corresponde corretamente a um rótulo real.
+- **FN (False Negative ou falso negativo):** objeto presente no rótulo que não
+  foi detectado pelo modelo.
+- **FPS (Frames Per Second ou quadros por segundo):** quantidade estimada de
+  imagens processadas por segundo, calculada por `1000 / latência_ms_por_imagem`.
+
+O YOLOv8l foi escolhido para a API por apresentar o melhor desempenho de
+detecção: teve 207 verdadeiros positivos, não produziu falsos positivos nem
+falsos negativos e alcançou recall de 1,0000. Também obteve precisão de 0,9690,
+mAP50 de 0,9950 e mAP50-95 de 0,8831. Essa última é a métrica mais rigorosa,
+pois considera diferentes limiares de IoU e avalia melhor a qualidade do
+posicionamento das caixas.
+
+O YOLOv8n é mais rápido, com 7,97 FPS contra 1,17 FPS do YOLOv8l, mas apresenta
+menor qualidade: 24 falsos positivos, 6 falsos negativos e 201 acertos brutos.
+Assim, o YOLOv8n é aproximadamente 6,8 vezes mais rápido, enquanto o YOLOv8l
+oferece maior confiabilidade e precisão para o objetivo do sistema. Os valores
+de velocidade foram medidos durante a validação no ambiente do benchmark e
+podem variar conforme o hardware.
+
+## 5. Execução da API
+
+O modelo escolhido deve ser copiado para `models/best.pt`, que é o caminho
+padrão utilizado pela API:
+
+```powershell
+Copy-Item runs\fitpose-yolov8l\weights\best.pt models\best.pt
 ```
 
-## Observações
+Para iniciar a API, execute:
 
-- O arquivo `.txt` em `labels/` contém as coordenadas normalizadas das caixas.
-- As imagens em `annotated/` servem para verificar os rótulos antes do treino.
-- Se aparecer `person`, o comando foi executado com um modelo genérico em vez
-  de `models/best-v8.pt`.
-- Não versionar imagens, pesos grandes ou a pasta `runs/` no Git.
+```powershell
+python -m uvicorn main:app --reload
+```
+
+Por meio da variável `MODEL_PATH`, é possível especificar outro caminho, se necessário:
+
+```powershell
+$env:MODEL_PATH="outro\caminho\modelo.pt"
+python -m uvicorn main:app --reload
+```
+
+Também é possível configurar o limiar de confiança:
+
+```powershell
+$env:CONFIDENCE_THRESHOLD="0.50"
+python -m uvicorn main:app --reload
+```
+
+Endpoints disponíveis:
+
+- `GET /health`: verifica o status da API e informa o modelo carregado;
+- `POST /detect`: recebe uma imagem e retorna as detecções encontradas.
+
+Exemplo de resposta do endpoint `POST /detect`:
+
+```json
+{
+  "status": "success",
+  "detections": [
+    {
+      "class_name": "Normal_OverheadPress",
+      "label": "Desenvolvimento de ombros",
+      "confidence": 0.3724,
+      "box": {
+        "x_min": 20,
+        "y_min": 0,
+        "x_max": 402,
+        "y_max": 360
+      }
+    }
+  ]
+}
+```
+
+Após iniciar a aplicação, a documentação interativa fica disponível em
+`http://127.0.0.1:8000/docs`.

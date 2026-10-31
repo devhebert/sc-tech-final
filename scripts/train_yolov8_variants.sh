@@ -20,12 +20,9 @@ if [[ ! -f "$DATASET" ]]; then
 fi
 
 source .venv/bin/activate
-mkdir -p models
-
 for model in $MODELS; do
     model_name="${model%.pt}"
     run_name="${RUN_PREFIX}-${model_name}"
-    output_name="${model_name}.pt"
 
     echo "Treinando: $model -> runs/$run_name"
     yolo detect train \
@@ -46,7 +43,4 @@ for model in $MODELS; do
         echo "Checkpoint não encontrado: $best_path" >&2
         exit 1
     fi
-
-    cp "$best_path" "models/$output_name"
-    echo "Modelo pronto em: $PROJECT_ROOT/models/$output_name"
 done

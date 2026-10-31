@@ -5,7 +5,7 @@ from pathlib import Path
 
 @dataclass(frozen=True)
 class ModelConfig:
-    path: Path = Path("models/best-v8.pt")
+    path: Path = Path("models/best.pt")
     confidence_threshold: float = 0.50
 
 
@@ -15,6 +15,6 @@ class ApplicationConfig:
 
     @staticmethod
     def from_environment() -> "ApplicationConfig":
-        model_path = Path(os.getenv("MODEL_PATH", "models/best-v8.pt"))
+        model_path = Path(os.getenv("MODEL_PATH", "models/best.pt"))
         confidence = float(os.getenv("CONFIDENCE_THRESHOLD", "0.25"))
         return ApplicationConfig(ModelConfig(path=model_path, confidence_threshold=confidence))

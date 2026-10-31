@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import os
-import shutil
 from pathlib import Path
 
 from ultralytics import YOLO
@@ -11,7 +10,6 @@ from ultralytics import YOLO
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 RUNS_DIR = PROJECT_ROOT / "runs"
-MODELS_DIR = PROJECT_ROOT / "models"
 
 
 def env_int(name: str, default: int) -> int:
@@ -40,12 +38,10 @@ def main() -> None:
     batch = env_int("BATCH", 4)
     workers = env_int("WORKERS", 2)
     run_prefix = os.environ.get("RUN_PREFIX", "fitpose")
-    MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
     for model_name in models:
         model_stem = Path(model_name).stem
         run_name = f"{run_prefix}-{model_stem}"
-        output_path = MODELS_DIR / f"{model_stem}.pt"
         best_path = RUNS_DIR / run_name / "weights" / "best.pt"
 
         print(f"Treinando: {model_name} -> runs/{run_name}")
@@ -65,9 +61,6 @@ def main() -> None:
 
         if not best_path.is_file():
             raise SystemExit(f"Checkpoint não encontrado: {best_path}")
-
-        shutil.copy2(best_path, output_path)
-        print(f"Modelo pronto em: {PROJECT_ROOT / 'models' / output_path.name}")
 
 
 if __name__ == "__main__":
