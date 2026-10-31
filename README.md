@@ -196,29 +196,36 @@ Compare os três modelos treinados usando a mesma validação oficial em
 `data/fitness_normal/valid`. Não use as imagens pseudo-rotuladas para medir o
 resultado final.
 
-### Avaliar o YOLOv8
+### Executar o benchmark
+
+O benchmark principal é executado pelo script `scripts/benchmark.py`, que
+avalia os três modelos e salva as métricas consolidadas em
+`runs/benchmark/metrics.csv`:
+
+```bash
+python scripts/benchmark.py
+```
+
+Os gráficos e as imagens de validação ficam em
+`runs/benchmark/yolov8l/` e `runs/benchmark/yolov8n/`.
+
+### Executar a validação individualmente
+
+Se não for necessário salvar as métricas consolidadas em CSV, os modelos também
+podem ser avaliados individualmente com os comandos `yolo detect val`:
+
+#### Avaliar o YOLOv8l
 
 ```bash
 yolo detect val \
-  model=runs/fitpose-yolov8/weights/best.pt \
+  model=runs/fitpose-yolov8l/weights/best.pt \
   data=data/fitness_normal/data.yaml \
   split=val \
   project=runs/benchmark \
-  name=yolov8
+  name=yolov8l
 ```
 
-### Avaliar o YOLOv8l3
-
-```bash
-yolo detect val \
-  model=runs/fitpose-yolov8l3/weights/best.pt \
-  data=data/fitness_normal/data.yaml \
-  split=val \
-  project=runs/benchmark \
-  name=yolov8l3
-```
-
-### Avaliar o YOLOv8n
+#### Avaliar o YOLOv8n
 
 ```bash
 yolo detect val \
@@ -229,9 +236,17 @@ yolo detect val \
   name=yolov8n
 ```
 
-Os resultados ficam em `runs/benchmark/yolov8/`, `runs/benchmark/yolov8l3/` e
-`runs/benchmark/yolov8n/`. Compare principalmente `mAP50-95`, `mAP50`,
+Os comandos individuais exibem as métricas no terminal, mas não geram
+necessariamente um arquivo CSV. Compare principalmente `mAP50-95`, `mAP50`,
 precisão e recall, sempre usando a mesma configuração de validação.
+
+Durante o treinamento, o YOLO já avalia o modelo ao final de cada época usando
+o conjunto de validação. Essa etapa gera métricas e arquivos como
+`results.csv`, `results.png`, `confusion_matrix.png` e as curvas de precisão e
+recall. A avaliação durante o treinamento acompanha a evolução do modelo e ajuda a escolher o best.pt.   
+O benchmark separado avalia os modelos finais com a mesma configuração e facilita uma comparação controlada 
+entre eles, por isso continua sendo recomendado para comparar os três
+modelos finais de forma padronizada.
 
 ## Fluxo resumido
 
