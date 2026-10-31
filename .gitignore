@@ -2,12 +2,8 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+*.cache
 
-# models/
-# runs/
-# *.pt
-
-datasets/
 data/fitness_extra/
 data/fitness_teacher/
 
