@@ -6,7 +6,7 @@ cd "$PROJECT_ROOT"
 
 DATASET="${DATASET:-data/fitness_normal/data.yaml}"
 #MODELS="${MODELS:-yolov8n.pt yolov8s.pt yolov8m.pt yolov8l.pt yolo11n.pt yolo11s.pt yolo11m.pt yolo11l.pt}"
-MODELS="${MODELS:-yolov8l.pt yolo11l.pt}"
+MODELS="${MODELS:-yolov8n.pt yolov8l.pt}"
 EPOCHS="${EPOCHS:-100}"
 PATIENCE="${PATIENCE:-20}"
 IMGSZ="${IMGSZ:-512}"
@@ -20,12 +20,9 @@ if [[ ! -f "$DATASET" ]]; then
 fi
 
 source .venv/bin/activate
-mkdir -p models
-
 for model in $MODELS; do
     model_name="${model%.pt}"
     run_name="${RUN_PREFIX}-${model_name}"
-    output_name="${model_name}.pt"
 
     echo "Treinando: $model -> runs/$run_name"
     yolo detect train \
@@ -46,7 +43,4 @@ for model in $MODELS; do
         echo "Checkpoint não encontrado: $best_path" >&2
         exit 1
     fi
-
-    cp "$best_path" "models/$output_name"
-    echo "Modelo pronto em: $PROJECT_ROOT/models/$output_name"
 done
